@@ -1,1 +1,157 @@
-<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>mini me studio</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet"><link rel="stylesheet" href="style.css"></head><body><div id="intro"><img src="assets/1.gif" alt="mini me"></div><div class="shell"><div class="dots"></div><header><div class="brand"><img src="assets/minilogo.svg"><div class="toolbar"><button class="save" id="save">Save</button><i>|</i><button id="back">Back</button><button class="icon" id="backIcon"><img src="assets/back.svg" alt="Back"></button><i>-</i><button class="icon" id="forwardIcon"><img src="assets/forward.svg" alt="Forward"></button><button id="forward">Forward</button><i>|</i><button id="zin"><img src="assets/zoom-in.svg" alt="Zoom In">Zoom In</button><i>-</i><button id="zout"><img src="assets/zoom-out.svg" alt="Zoom Out">Zoom Out</button></div></div><div class="credits"><b id="credits"><img src="assets/coin.svg" alt="Credits">10 credits</b><small>renewed every 24 hs</small></div></header><main><aside class="left"><section><label><span>?</span>Upload</label><div class="upload" id="upload"><strong>Upload</strong><p>ارفع قرابة الـ 1 إلى 5 صور من نفس الشكل.</p><div class="uploadIcon"><img src="assets/upload.svg" alt="Upload"></div><input id="files" type="file" accept="image/*" multiple></div><div class="thumbs" id="thumbs"></div></section><section><label><span>?</span>style :</label><div class="choices" id="styles"><button class="active" data-value="figure">Figure</button><button data-value="funko">fanko</button><button data-value="voxel">voxel</button></div><small>Choose the appropriate style</small></section><section><label><span>?</span>Model size :</label><div class="choices sizes" id="sizes"><button data-value="8cm">8cm</button><button class="active recommended" data-value="10cm">10cm</button><button data-value="15cm">15cm</button></div></section><button class="generation" id="generate">generation <em>5 Credits</em></button><div class="price"><strong id="price">Total price: 2000 EGP</strong><button id="buy" disabled>buy</button></div></aside><section class="stageWrap"><div class="stage" id="stage"><div id="model"><div class="empty">YOUR GENERATED<br>MODEL APPEARS HERE</div></div><img class="watermark" src="assets/minilogo.svg"></div></section><aside class="rail"><button id="note"><img src="assets/comment.svg" alt="Note"><b>note</b></button><button id="download"><img src="assets/download.svg" alt="Download"><b>download</b></button><button id="share"><img src="assets/share.svg" alt="Share"><b>Share</b></button></aside></main></div><div id="noteCursor">note</div><div id="buyModal"><form id="order"><button type="button" class="close" id="close">×</button><h2>Order your mini me</h2><input required placeholder="Name" id="name"><input required placeholder="Detailed address" id="address"><input required placeholder="Phone" id="phone"><input required type="email" placeholder="Email" id="email"><div class="payments"><button type="button" data-pay="instapay"><img src="assets/payment/instapay.png"></button><button type="button" data-pay="vodafone"><img src="assets/payment/vodafone-cash.png"></button><button type="button" data-pay="paypal"><img src="assets/payment/paypal.png"></button></div><button class="send">Send order</button><p id="status"></p></form></div><script src="app.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#fbf3db">
+  <title>mini me studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="intro" aria-label="Loading mini me">
+    <img src="assets/1.gif" alt="mini me intro">
+  </div>
+
+  <div class="shell">
+    <div class="dots" aria-hidden="true"></div>
+
+    <header>
+      <div class="brandArea">
+        <a class="brand" href="/" aria-label="mini me">
+          <img src="assets/minilogo.svg" alt="mini me">
+        </a>
+
+        <nav class="toolbar" aria-label="Studio controls">
+          <button class="textBtn save" id="save" type="button">Save</button>
+          <span class="bar" aria-hidden="true">|</span>
+
+          <button class="textBtn" id="back" type="button">Back</button>
+          <button class="iconBtn" id="backIcon" type="button" aria-label="Back">
+            <img src="assets/back.svg" alt="">
+          </button>
+          <span class="dash" aria-hidden="true">-</span>
+
+          <button class="iconBtn forwardIcon" id="forwardIcon" type="button" aria-label="Forward">
+            <img src="assets/forward.svg" alt="">
+          </button>
+          <button class="textBtn" id="forward" type="button">Forward</button>
+          <span class="bar" aria-hidden="true">|</span>
+
+          <button class="zoomBtn" id="zin" type="button">
+            <img src="assets/zoom-in.svg" alt="">Zoom In
+          </button>
+          <span class="dash" aria-hidden="true">-</span>
+          <button class="zoomBtn" id="zout" type="button">
+            <img src="assets/zoom-out.svg" alt="">Zoom Out
+          </button>
+        </nav>
+      </div>
+
+      <div class="credits" id="creditCard" title="10 credits renewed every 24 hours">
+        <div class="creditTop"><span id="credits">10 credits</span><img src="assets/coin.svg" alt=""></div>
+        <small>renewed every 24 hs</small>
+      </div>
+    </header>
+
+    <main>
+      <aside class="leftPanel" aria-label="Mini me settings">
+        <section class="panelSection uploadSection">
+          <label class="panelLabel"><span class="help" data-help="Upload between 1 and 5 reference images of the same subject.">?</span>Upload</label>
+          <div class="uploadBox" id="upload">
+            <strong>Upload</strong>
+            <p>ارفع قرابة الـ 1 إلى 5 صور من نفس الشكل.</p>
+            <div class="uploadIcon"><img src="assets/upload.svg" alt="Upload"></div>
+            <input id="files" type="file" accept="image/*" multiple>
+          </div>
+          <div class="thumbs" id="thumbs" aria-label="Uploaded images"></div>
+        </section>
+
+        <section class="panelSection">
+          <label class="panelLabel"><span class="help" data-help="Choose the visual style that will be sent to the image generation model.">?</span>style :</label>
+          <div class="choices" id="styles">
+            <button type="button" class="active" data-value="figure">Figure</button>
+            <button type="button" data-value="funko">fanko</button>
+            <button type="button" data-value="voxel">voxel</button>
+          </div>
+          <small class="fieldHint">Choose the appropriate style</small>
+        </section>
+
+        <section class="panelSection sizeSection">
+          <label class="panelLabel"><span class="help" data-help="Select the physical size of the collectible. This changes the final manufacturing price.">?</span>Model size :</label>
+          <div class="choices sizes" id="sizes">
+            <button type="button" data-value="8cm">8cm</button>
+            <button type="button" class="active recommended" data-value="10cm">10cm</button>
+            <button type="button" data-value="15cm">15cm</button>
+          </div>
+        </section>
+
+        <button class="generation" id="generate" type="button" disabled>
+          <span>generation</span>
+          <em>5 Credits</em>
+        </button>
+
+        <div class="priceRow">
+          <strong id="price">Total price: 2000 EGP</strong>
+          <button id="buy" type="button" disabled>buy</button>
+        </div>
+      </aside>
+
+      <section class="stageWrap" aria-label="Generation canvas">
+        <div class="stage" id="stage">
+          <div class="empty" id="empty">YOUR GENERATED<br>MODEL APPEARS HERE</div>
+          <div id="canvasLayer" class="canvasLayer" aria-live="polite"></div>
+          <img class="watermark" src="assets/minilogo.svg" alt="mini me">
+          <div class="stageStatus" id="stageStatus"></div>
+        </div>
+      </section>
+
+      <aside class="rail" aria-label="Studio actions">
+        <button id="note" type="button">
+          <img src="assets/comment.svg" alt="">
+          <b>note</b>
+        </button>
+        <button id="download" type="button" disabled>
+          <img src="assets/download.svg" alt="">
+          <b>download</b>
+        </button>
+        <button id="share" type="button" disabled>
+          <img src="assets/share.svg" alt="">
+          <b>Share</b>
+        </button>
+      </aside>
+    </main>
+  </div>
+
+  <div id="noteCursor">note</div>
+
+  <div id="notice" class="notice" role="status" aria-live="polite"></div>
+
+  <div id="buyModal" class="modal" aria-hidden="true">
+    <form id="order" class="orderCard">
+      <button type="button" class="close" id="close" aria-label="Close">×</button>
+      <h2>Order your mini me</h2>
+      <p class="orderSummary" id="orderSummary">10cm · 2000 EGP</p>
+
+      <input required placeholder="Name" id="name" autocomplete="name">
+      <input required placeholder="Detailed address" id="address" autocomplete="street-address">
+      <input required placeholder="Phone" id="phone" autocomplete="tel">
+      <input required type="email" placeholder="Email" id="email" autocomplete="email">
+
+      <div class="paymentTitle">Payment method</div>
+      <div class="payments" id="payments">
+        <button type="button" data-pay="instapay" aria-label="InstaPay"><img src="assets/payment/instapay.png" alt="InstaPay"></button>
+        <button type="button" data-pay="vodafone" aria-label="Vodafone Cash"><img src="assets/payment/vodafone-cash.png" alt="Vodafone Cash"></button>
+        <button type="button" data-pay="paypal" aria-label="PayPal"><img src="assets/payment/paypal.png" alt="PayPal"></button>
+      </div>
+
+      <button class="send" type="submit">Send order</button>
+      <p id="status" class="status"></p>
+    </form>
+  </div>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
