@@ -14,14 +14,14 @@ const priceEl = $('#price');
 const notice = $('#notice');
 const noteCursor = $('#noteCursor');
 
-const PRICES = { '8cm': 1500, '10cm': 2000, '15cm': 2500 };
+const PRICES = { '8cm': 750, '10cm': 1000, '15cm': 1250 };
 const STYLE_PROMPTS = {
   figure: 'Create a collectible 3D figure of the person or subject shown in the reference images. Preserve identity, facial structure, hairstyle, clothing, colors, accessories and distinctive details. Use a premium realistic vinyl/resin collectible figure presentation, clean studio lighting, full body, centered, isolated, no text, no extra people.',
   funko: 'Create a Funko Pop inspired collectible figure of the person or subject shown in the reference images. Preserve recognizable identity, hairstyle, clothing colors, accessories and distinctive details while using the iconic stylized oversized head, simplified facial features and compact body proportions. Clean studio lighting, centered, isolated, no text, no extra people.',
   voxel: 'Create a voxel/block-art collectible figure of the person or subject shown in the reference images. Preserve recognizable identity, hairstyle, clothing colors, accessories and distinctive details using clean cubic geometry and a polished 3D voxel aesthetic. Centered, isolated, no text, no extra people.'
 };
 
-let images = [], style = 'figure', size = '10cm', credits = 10, creditsDay = '', zoom = 1, notes = [], noteMode = false, history = [], historyIndex = -1, generatedData = '', payment = 'instapay', introTimer;
+let images = [], style = 'funko', size = '10cm', credits = 10, creditsDay = '', zoom = 1, notes = [], noteMode = false, history = [], historyIndex = -1, generatedData = '', payment = 'instapay', introTimer;
 
 function toast(message) { notice.textContent = message; notice.classList.add('show'); clearTimeout(toast.timer); toast.timer = setTimeout(() => notice.classList.remove('show'), 2200); }
 function todayKey() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
@@ -29,7 +29,7 @@ function loadCredits() { try { const saved = JSON.parse(localStorage.getItem('mi
 function renderCredits() { creditsEl.textContent = `${credits} credits`; generate.disabled = images.length === 0 || credits < 5 || stage.classList.contains('generating'); }
 function saveCredits() { creditsDay = todayKey(); localStorage.setItem('minime-credits', JSON.stringify({ date: creditsDay, credits })); renderCredits(); }
 function persistState() { try { localStorage.setItem('minime-state', JSON.stringify({ images, style, size, zoom, notes, generatedData, savedAt: Date.now() })); } catch {} }
-function restoreState() { try { const s = JSON.parse(localStorage.getItem('minime-state') || 'null'); if (!s) return; images = Array.isArray(s.images) ? s.images.slice(0,5) : []; style = s.style || 'figure'; size = s.size || '10cm'; zoom = Number(s.zoom) || 1; notes = Array.isArray(s.notes) ? s.notes : []; generatedData = s.generatedData || ''; renderThumbs(); applyChoices(); if (generatedData) showGenerated(generatedData, false); else applyZoom(); } catch {} }
+function restoreState() { try { const s = JSON.parse(localStorage.getItem('minime-state') || 'null'); if (!s) return; images = Array.isArray(s.images) ? s.images.slice(0,5) : []; style = s.style || 'funko'; size = s.size || '10cm'; zoom = Number(s.zoom) || 1; notes = Array.isArray(s.notes) ? s.notes : []; generatedData = s.generatedData || ''; renderThumbs(); applyChoices(); if (generatedData) showGenerated(generatedData, false); else applyZoom(); } catch {} }
 function save() { persistState(); toast('Progress saved on this device.'); }
 
 function renderThumbs() { thumbs.innerHTML = ''; images.forEach((src, i) => { const d = document.createElement('div'); d.className = 'thumb'; const img = document.createElement('img'); img.src = src; img.alt = `Reference ${i+1}`; const remove = document.createElement('button'); remove.type = 'button'; remove.textContent = '×'; remove.setAttribute('aria-label','Remove image'); remove.onclick = e => { e.stopPropagation(); images.splice(i,1); renderThumbs(); renderCredits(); persistState(); }; d.append(img,remove); thumbs.appendChild(d); }); }
