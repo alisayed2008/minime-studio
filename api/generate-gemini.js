@@ -1,58 +1,144 @@
+const HF_SPACE = 'https://prithivmlmods-qwen-image-edit-2511-loras-fast.hf.space';
+const MAX_WAIT_MS = 55000;
+
+function errorResponse(res, status, error) {
+  return res.status(status).json({ error });
+}
+
+async function readSSE(response, deadline) {
+  if (!response.body) throw new Error('Free image service returned no event stream.');
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = '';
+
+  while (Date.now() < deadline) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    const events = buffer.split('\n\n');
+    buffer = events.pop() || '';
+
+    for (const event of events) {
+      let eventName = '';
+      let dataText = '';
+      for (const line of event.split('\n')) {
+        if (line.startsWith('event:')) eventName = line.slice(6).trim();
+        if (line.startsWith('data:')) dataText += line.slice(5).trim();
+      }
+      if (eventName === 'error') {
+        let message = dataText || 'Free image generation failed.';
+        try {
+          const parsed = JSON.parse(dataText);
+          message = parsed?.error || parsed?.message || message;
+        } catch {}
+        throw new Error(message);
+      }
+      if (eventName !== 'complete' || !dataText) continue;
+      try {
+        return JSON.parse(dataText);
+      } catch {
+        throw new Error('Invalid response from the free image service.');
+      }
+    }
+  }
+
+  throw new Error('The free image service took too long. Please try again.');
+}
+
+function findImage(result) {
+  const values = Array.isArray(result) ? result : [result];
+  for (const item of values) {
+    if (!item) continue;
+    if (typeof item === 'string') {
+      if (item.startsWith('data:image/')) return item;
+      if (/^https?:\/\//i.test(item)) return item;
+    }
+    if (typeof item === 'object') {
+      for (const value of [item.url, item.path, item.data?.url, item.data?.path]) {
+        if (typeof value === 'string' && (/^https?:\/\//i.test(value) || value.startsWith('data:image/'))) return value;
+      }
+    }
+  }
+  return null;
+}
+
+async function toDataUrl(ref) {
+  if (ref.startsWith('data:image/')) return ref;
+  const response = await fetch(ref);
+  if (!response.ok) throw new Error('Could not retrieve the generated image.');
+  const mime = response.headers.get('content-type') || 'image/png';
+  const body = Buffer.from(await response.arrayBuffer());
+  return `data:${mime};base64,${body.toString('base64')}`;
+}
+
 export default async function handler(req, res) {
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed.' });
-  if (!process.env.GEMINI_API_KEY) return res.status(500).json({ error: 'GEMINI_API_KEY is not configured.' });
+  if (req.method !== 'POST') return errorResponse(res, 405, 'Method not allowed.');
 
   try {
     const { images, style, size, prompt } = req.body || {};
     if (!Array.isArray(images) || images.length < 1 || images.length > 5) {
-      return res.status(400).json({ error: 'Upload between 1 and 5 reference images.' });
+      return errorResponse(res, 400, 'Upload between 1 and 5 reference images.');
     }
 
-    const parts = [{
-      text: `${prompt || 'Create a high-quality collectible figure from the reference images.'}\nPhysical size requested: ${size || '10cm'}. Keep the complete subject visible and centered. Preserve identity, facial structure, hairstyle, clothing, colors, accessories and distinctive details. Do not add text, logos, borders or watermarks.`
-    }];
+    const encodedImages = images
+      .filter((item) => typeof item?.data === 'string' && item.data.startsWith('data:image/'))
+      .map((item) => item.data);
+    if (!encodedImages.length) return errorResponse(res, 400, 'No valid reference images were provided.');
 
-    for (const item of images) {
-      if (!item?.data?.startsWith('data:image/')) continue;
-      const match = item.data.match(/^data:(image\/[a-zA-Z0-9.+-]+);base64,(.+)$/);
-      if (!match) continue;
-      parts.push({ inlineData: { mimeType: match[1], data: match[2] } });
-    }
+    const styleInstruction = {
+      figure: 'Turn the subject into a premium collectible 3D figure. Preserve identity, facial structure, hairstyle, clothing, colors, accessories and distinctive details. Realistic vinyl or resin collectible proportions, full body, centered, clean studio presentation.',
+      funko: 'Turn the subject into a Funko Pop inspired collectible figure. Preserve recognizable identity, hairstyle, clothing colors, accessories and distinctive details. Use an oversized head, simplified facial features and compact toy body, while keeping the person clearly recognizable.',
+      voxel: 'Turn the subject into a polished 3D voxel collectible figure. Preserve recognizable identity, hairstyle, clothing colors, accessories and distinctive details using clean cubic geometry and a collectible-toy presentation.'
+    }[style] || 'Turn the subject into a premium collectible 3D figure.';
 
-    if (parts.length === 1) return res.status(400).json({ error: 'No valid reference images were provided.' });
+    const finalPrompt = `${styleInstruction}\n${prompt || ''}\nRequested physical size: ${size || '10cm'}. Keep the complete subject visible and centered. Do not add text, logos, borders, watermarks or extra people.`;
 
-    const model = process.env.GEMINI_IMAGE_MODEL || 'gemini-3.1-flash-image';
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/${encodeURIComponent(model)}:generateContent`, {
+    const queued = await fetch(`${HF_SPACE}/gradio_api/call/infer`, {
       method: 'POST',
-      headers: {
-        'x-goog-api-key': process.env.GEMINI_API_KEY,
-        'Content-Type': 'application/json'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        contents: [{ parts }],
-        generationConfig: {
-          responseModalities: ['IMAGE'],
-          responseFormat: {
-            image: {
-              aspectRatio: 'ASPECT_RATIO_ONE_BY_ONE'
-            }
-          }
-        }
+        data: [
+          JSON.stringify(encodedImages),
+          finalPrompt,
+          'Style-Transfer',
+          0,
+          true,
+          1.0,
+          4
+        ]
       })
     });
 
-    const data = await response.json().catch(() => ({}));
-    if (!response.ok) return res.status(response.status).json({ error: data?.error?.message || 'Gemini image generation failed.' });
+    const queuedText = await queued.text();
+    if (!queued.ok) {
+      let message = queuedText || 'Could not queue the free image generation request.';
+      try {
+        const parsed = JSON.parse(queuedText);
+        message = parsed?.error || parsed?.message || message;
+      } catch {}
+      return errorResponse(res, queued.status, message);
+    }
 
-    const responseParts = data?.candidates?.[0]?.content?.parts || [];
-    const imagePart = responseParts.find((part) => part?.inlineData?.data);
-    const b64 = imagePart?.inlineData?.data;
-    const mimeType = imagePart?.inlineData?.mimeType || 'image/png';
-    if (!b64) return res.status(502).json({ error: 'Gemini returned no image.' });
+    let queuedData;
+    try {
+      queuedData = JSON.parse(queuedText);
+    } catch {
+      return errorResponse(res, 502, 'The free image service returned an invalid queue response.');
+    }
+    if (!queuedData?.event_id) return errorResponse(res, 502, 'The free image service did not return a queue id.');
 
-    return res.status(200).json({ image: `data:${mimeType};base64,${b64}`, style, size });
+    const result = await readSSE(
+      await fetch(`${HF_SPACE}/gradio_api/call/infer/${encodeURIComponent(queuedData.event_id)}`),
+      Date.now() + MAX_WAIT_MS
+    );
+
+    const imageRef = findImage(result);
+    if (!imageRef) return errorResponse(res, 502, 'The free image service returned no generated image.');
+
+    const image = await toDataUrl(imageRef);
+    return res.status(200).json({ image, style, size, provider: 'huggingface-zero-gpu' });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: 'Image generation service failed.' });
+    return errorResponse(res, 500, error?.message || 'Free image generation service failed.');
   }
 }
