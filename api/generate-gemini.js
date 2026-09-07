@@ -32,7 +32,12 @@ export default async function handler(req, res) {
         contents: [{ parts }],
         generationConfig: {
           responseModalities: ['IMAGE'],
-          responseFormat: { image: { aspectRatio: '1:1', imageSize: '1K' } }
+          responseFormat: {
+            image: {
+              aspectRatio: 'ASPECT_RATIO_ONE_BY_ONE',
+              imageSize: 'IMAGE_SIZE_1K'
+            }
+          }
         }
       })
     });
