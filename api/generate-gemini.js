@@ -34,8 +34,7 @@ export default async function handler(req, res) {
           responseModalities: ['IMAGE'],
           responseFormat: {
             image: {
-              aspectRatio: 'ASPECT_RATIO_ONE_BY_ONE',
-              imageSize: 'IMAGE_SIZE_1K'
+              aspectRatio: 'ASPECT_RATIO_ONE_BY_ONE'
             }
           }
         }
