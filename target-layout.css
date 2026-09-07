@@ -9,11 +9,11 @@
   .toolbar .iconBtn{width:12px;height:12px}
   .toolbar img,.toolbar .iconBtn img{width:12px;height:12px}
   .toolbar .zoomBtn img{width:11px;height:11px}
-  .credits{width:81px;height:32px;margin-right:-1px;border:2px solid #000;border-radius:9px;box-shadow:3px 3px #000;padding:2px 3px 0}
+  .credits{width:81px;height:32px;margin-right:-1px;border:2px solid #000;border-radius:9px;box-shadow:3px 3px #000;padding:2px 3px 0;position:relative}
   .creditTop{gap:2px;font-size:10px}
   .creditTop img{width:10px;height:10px}
-  .credits small{font-size:5px}
-  main{height:calc(100% - 55px);grid-template-columns:176px minmax(0,1fr) 61px;gap:10px;padding:0 15px}
+  .credits small{position:absolute;top:calc(100% + 2px);left:0;width:100%;font-size:5px;line-height:1;text-align:center;white-space:nowrap}
+  main{height:calc(100% - 55px);grid-template-columns:165px minmax(0,1fr) 57px;gap:9px;padding:0 15px}
   .leftPanel,.rail{border-width:3px;border-radius:20px;box-shadow:5px 5px #000}
   .leftPanel{padding:17px 5px 7px}
   .panelSection{margin-bottom:5px}
@@ -28,8 +28,9 @@
   .choices{gap:4px;margin:0 5px}
   .choices button{height:21px;border-width:2px;border-radius:7px;box-shadow:1px 1px #000;font-size:8px;padding:0}
   .fieldHint{font-size:6px;margin:1px 7px 0}
-  .sizes{margin-top:4px}
-  .sizes .recommended:after{font-size:4px;margin-top:1px}
+  .sizes{margin-top:4px;padding-bottom:6px}
+  .sizes button{position:relative}
+  .sizes .recommended:after{position:absolute;top:calc(100% + 2px);left:50%;transform:translateX(-50%);font-size:4px;margin:0;line-height:1;white-space:nowrap}
   .generation{height:28px;margin:7px 5px 0;border-width:2px;border-radius:7px;box-shadow:1px 1px #000;font-size:10px}
   .generation em{font-size:7px}
   .priceRow{grid-template-columns:1fr 53px;gap:4px}
