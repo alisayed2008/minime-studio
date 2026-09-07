@@ -6,6 +6,10 @@ function errorResponse(res, status, error) {
 }
 
 async function readSSE(response, deadline) {
+  if (!response.ok) {
+    const text = await response.text().catch(() => '');
+    throw new Error(text || `Hugging Face stream failed (${response.status}).`);
+  }
   if (!response.body) throw new Error('Free image service returned no event stream.');
   const reader = response.body.getReader();
   const decoder = new TextDecoder();
@@ -25,6 +29,7 @@ async function readSSE(response, deadline) {
         if (line.startsWith('event:')) eventName = line.slice(6).trim();
         if (line.startsWith('data:')) dataText += line.slice(5).trim();
       }
+
       if (eventName === 'error') {
         let message = dataText || 'Free image generation failed.';
         try {
@@ -33,6 +38,7 @@ async function readSSE(response, deadline) {
         } catch {}
         throw new Error(message);
       }
+
       if (eventName !== 'complete' || !dataText) continue;
       try {
         return JSON.parse(dataText);
@@ -93,7 +99,8 @@ export default async function handler(req, res) {
 
     const finalPrompt = `${styleInstruction}\n${prompt || ''}\nRequested physical size: ${size || '10cm'}. Keep the complete subject visible and centered. Do not add text, logos, borders, watermarks or extra people.`;
 
-    const queued = await fetch(`${HF_SPACE}/gradio_api/call/infer`, {
+    // Current Space exposes the named API as /edit_image, not /infer.
+    const queued = await fetch(`${HF_SPACE}/gradio_api/call/edit_image`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -127,10 +134,8 @@ export default async function handler(req, res) {
     }
     if (!queuedData?.event_id) return errorResponse(res, 502, 'The free image service did not return a queue id.');
 
-    const result = await readSSE(
-      await fetch(`${HF_SPACE}/gradio_api/call/infer/${encodeURIComponent(queuedData.event_id)}`),
-      Date.now() + MAX_WAIT_MS
-    );
+    const resultResponse = await fetch(`${HF_SPACE}/gradio_api/call/edit_image/${encodeURIComponent(queuedData.event_id)}`);
+    const result = await readSSE(resultResponse, Date.now() + MAX_WAIT_MS);
 
     const imageRef = findImage(result);
     if (!imageRef) return errorResponse(res, 502, 'The free image service returned no generated image.');
