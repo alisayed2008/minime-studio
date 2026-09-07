@@ -5,6 +5,13 @@ function errorResponse(res, status, error) {
   return res.status(status).json({ error });
 }
 
+function hfHeaders() {
+  const token = process.env.HF_TOKEN;
+  return token
+    ? { Authorization: `Bearer ${token}` }
+    : {};
+}
+
 async function readSSE(response, deadline) {
   if (!response.ok) {
     const text = await response.text().catch(() => '');
@@ -98,11 +105,14 @@ export default async function handler(req, res) {
     }[style] || 'Turn the subject into a premium collectible 3D figure.';
 
     const finalPrompt = `${styleInstruction}\n${prompt || ''}\nRequested physical size: ${size || '10cm'}. Keep the complete subject visible and centered. Do not add text, logos, borders, watermarks or extra people.`;
+    const authHeaders = hfHeaders();
 
-    // Current Space exposes the named API as /edit_image, not /infer.
+    // The current Space exposes the named API as /edit_image, not /infer.
+    // When HF_TOKEN is configured, Hugging Face applies the account's ZeroGPU quota
+    // and gives authenticated requests better queue/rate-limit treatment.
     const queued = await fetch(`${HF_SPACE}/gradio_api/call/edit_image`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...authHeaders },
       body: JSON.stringify({
         data: [
           JSON.stringify(encodedImages),
@@ -134,7 +144,10 @@ export default async function handler(req, res) {
     }
     if (!queuedData?.event_id) return errorResponse(res, 502, 'The free image service did not return a queue id.');
 
-    const resultResponse = await fetch(`${HF_SPACE}/gradio_api/call/edit_image/${encodeURIComponent(queuedData.event_id)}`);
+    const resultResponse = await fetch(
+      `${HF_SPACE}/gradio_api/call/edit_image/${encodeURIComponent(queuedData.event_id)}`,
+      { headers: authHeaders }
+    );
     const result = await readSSE(resultResponse, Date.now() + MAX_WAIT_MS);
 
     const imageRef = findImage(result);
