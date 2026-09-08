@@ -9,10 +9,12 @@
   .toolbar .iconBtn{width:12px;height:12px}
   .toolbar img,.toolbar .iconBtn img{width:12px;height:12px}
   .toolbar .zoomBtn img{width:11px;height:11px}
-  .credits{width:81px;height:32px;margin-right:-1px;border:2px solid #000;border-radius:9px;box-shadow:3px 3px #000;padding:0;position:relative;overflow:visible;display:flex;align-items:center;justify-content:center;z-index:20}
-  .creditTop{gap:2px;font-size:10px;display:flex;align-items:center;justify-content:center;line-height:1}
+  .creditArea{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:5px;margin-right:-1px}
+  .credits{width:81px;height:32px;border:2px solid #000;border-radius:9px;box-shadow:3px 3px #000;padding:0;position:relative;overflow:visible;display:flex;align-items:center;justify-content:center;z-index:20}
+  .creditTop{gap:2px;font-size:10px;display:flex;align-items:center;justify-content:center;line-height:1;width:100%;height:100%}
   .creditTop img{width:10px;height:10px}
-  .credits small{position:absolute;top:calc(100% + 7px);left:50%;transform:translateX(-50%);width:max-content;font-size:5px;line-height:1;text-align:center;white-space:nowrap}
+  .credits small{display:none}
+  .creditsRenewed{display:block!important;position:static!important;width:max-content;font-size:5px!important;line-height:1!important;text-align:center;white-space:nowrap;color:#000!important;margin:0!important;padding:0!important}
   main{height:calc(100% - 55px);grid-template-columns:165px minmax(0,1fr) 57px;gap:9px;padding:0 15px}
   .leftPanel,.rail{border-width:3px;border-radius:20px;box-shadow:5px 5px #000}
   .leftPanel{padding:17px 5px 7px}
@@ -28,10 +30,9 @@
   .choices{gap:4px;margin:0 5px}
   .choices button{height:21px;border-width:2px;border-radius:7px;box-shadow:1px 1px #000;font-size:8px;padding:0}
   .fieldHint{font-size:6px;margin:1px 7px 0}
-  .sizes{margin-top:4px;padding-bottom:10px;overflow:visible}
-  .sizes button{position:relative;overflow:visible}
-  .sizes .recommended:after{content:'recommended';display:block!important;position:absolute!important;top:calc(100% + 5px)!important;bottom:auto!important;left:50%!important;right:auto!important;transform:translateX(-50%)!important;font-size:4px!important;color:#fff!important;margin:0!important;line-height:1!important;white-space:nowrap!important;z-index:10}
-  .generation{height:28px;margin:7px 5px 0;border-width:2px;border-radius:7px;box-shadow:1px 1px #000;font-size:10px}
+  .sizes{margin-top:4px;padding-bottom:0;overflow:visible}
+  .recommendedLabel{display:block!important;margin-top:4px!important;font-size:4px!important;line-height:1!important;color:#fff!important;text-align:center;white-space:nowrap}
+  .generation{height:28px;margin:10px 5px 0;border-width:2px;border-radius:7px;box-shadow:1px 1px #000;font-size:10px}
   .generation em{font-size:7px}
   .priceRow{grid-template-columns:1fr 53px;gap:4px}
   .priceRow strong{height:21px;border-radius:6px;font-size:6px}
