@@ -4,41 +4,41 @@
   .brandArea{gap:8px}
   .brand{width:44px;height:42px}
   .brand img{width:44px;height:42px}
-  .toolbar{gap:2px;margin-top:8px;font-family:Cairo,Arial,sans-serif;font-size:15px}
+  .toolbar{gap:2px;margin-top:8px;font-size:10px;font-family:Cairo,Arial,sans-serif}
   .toolbar button{gap:1px}
   .toolbar .iconBtn{width:12px;height:12px}
   .toolbar img,.toolbar .iconBtn img{width:12px;height:12px}
   .toolbar .zoomBtn img{width:11px;height:11px}
-  .creditArea{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:6px;margin-right:-1px}
+  .creditArea{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:6px;margin-right:-1px;font-family:Cairo,Arial,sans-serif}
   .credits{width:81px;height:32px;border:2px solid #000;border-radius:9px;box-shadow:3px 3px #000;padding:0;position:relative;overflow:visible;display:flex;align-items:center;justify-content:center;z-index:20}
-  .creditTop{gap:2px;font-size:13px;display:flex;align-items:center;justify-content:center;line-height:1;width:100%;height:100%;font-family:Cairo,Arial,sans-serif}
+  .creditTop{gap:2px;font-size:10px;font-family:Cairo,Arial,sans-serif;font-weight:900;display:flex;align-items:center;justify-content:center;line-height:1;width:100%;height:100%}
   .creditTop img{width:10px;height:10px}
   .credits small{display:none}
-  .creditsRenewed{display:block!important;position:static!important;width:max-content;font-size:5px!important;font-family:Cairo,Arial,sans-serif!important;line-height:1!important;text-align:center;white-space:nowrap;color:#000!important;margin:0!important;padding:0!important}
+  .creditsRenewed{display:block!important;position:static!important;width:max-content;font-family:Cairo,Arial,sans-serif;font-size:5px!important;font-weight:900!important;line-height:1!important;text-align:center;white-space:nowrap;color:#000!important;margin:0!important;padding:0!important}
   main{height:calc(100% - 55px);grid-template-columns:165px minmax(0,1fr) 57px;gap:9px;padding:0 15px}
   .leftPanel,.rail{border-width:3px;border-radius:20px;box-shadow:5px 5px #000}
   .leftPanel{padding:17px 5px 7px}
   .panelSection{margin-bottom:5px}
-  .panelLabel{font-size:11px;margin:0 0 3px 1px}
-  .help{top:-6px;font-size:7px;width:8px;height:8px;line-height:8px}
+  .panelLabel{font-size:10px;margin:0 0 3px 1px}
+  .help{top:-6px;font-size:6px;width:7px;height:7px;line-height:7px}
   .uploadBox{height:91px;margin:0 4px;border-width:2px;border-radius:14px}
-  .uploadBox strong{font-size:15px}
-  .uploadBox p{font-size:7px;margin:1px 0 5px}
+  .uploadBox strong{font-size:14px}
+  .uploadBox p{font-size:6px;margin:1px 0 5px}
   .uploadIcon{width:23px;height:23px;border-radius:6px}
   .uploadIcon img{width:15px;height:15px}
   .thumbs{gap:3px;margin:5px 10px 0;min-height:32px}
   .choices{gap:4px;margin:0 5px}
-  .choices button{height:21px;border-width:2px;border-radius:7px;box-shadow:1px 1px #000;font-size:9px;padding:0}
+  .choices button{height:21px;border-width:2px;border-radius:7px;box-shadow:1px 1px #000;font-size:8px;padding:0}
   .fieldHint{font-size:6px;margin:1px 7px 0}
   .sizeChoicesWrap{width:calc(100% - 10px);margin:0 5px;overflow:visible}
   .sizes{margin-top:4px;padding-bottom:0;overflow:visible;width:100%;margin-left:0;margin-right:0}
   .sizes button{overflow:visible}
-  .recommendedLabel{display:block!important;width:33.333333%!important;margin:4px 0 0 33.333333%!important;font-size:5px!important;font-family:Cairo,Arial,sans-serif!important;line-height:1!important;color:#fff!important;text-align:center!important;white-space:nowrap}
-  .generation{height:28px;margin:10px 5px 0;border-width:2px;border-radius:7px;box-shadow:1px 1px #000;font-size:12px}
+  .recommendedLabel{display:block!important;width:33.333333%!important;margin:2px 0 0 33.333333%!important;font-family:Cairo,Arial,sans-serif;font-size:4px!important;font-weight:900!important;line-height:1!important;color:#fff!important;text-align:center!important;white-space:nowrap}
+  .generation{height:28px;margin:10px 5px 0;border-width:2px;border-radius:7px;box-shadow:1px 1px #000;font-size:10px}
   .generation em{font-size:7px}
   .priceRow{grid-template-columns:1fr 53px;gap:4px}
-  .priceRow strong{height:21px;border-radius:6px;font-size:7px}
-  .priceRow button{height:21px;border-width:1px;border-radius:6px;font-size:9px}
+  .priceRow strong{height:21px;border-radius:6px;font-size:6px}
+  .priceRow button{height:21px;border-width:1px;border-radius:6px;font-size:7px}
   .stageWrap{padding-top:4px}
   .stage{height:calc(100% - 8px);border-width:3px;border-radius:24px;box-shadow:5px 5px #000;background-size:25px 25px}
   .empty{font-size:14px}
