@@ -54,8 +54,8 @@
 
       <div class="credits" id="creditCard" title="10 credits renewed every 24 hours">
         <div class="creditTop"><span id="credits">10 credits</span><img src="assets/coin.svg" alt=""></div>
-        <small>renewed every 24 hs</small>
       </div>
+      <small class="creditsRenewed">renewed every 24 hs</small>
     </header>
 
     <main>
@@ -85,9 +85,10 @@
           <label class="panelLabel"><span class="help" data-help="Select the physical size of the collectible. This changes the final manufacturing price.">?</span>Model size :</label>
           <div class="choices sizes" id="sizes">
             <button type="button" data-value="8cm">8cm</button>
-            <button type="button" class="active recommended" data-value="10cm">10cm</button>
+            <button type="button" class="active" data-value="10cm">10cm</button>
             <button type="button" data-value="15cm">15cm</button>
           </div>
+          <small class="recommendedLabel">recommended</small>
         </section>
 
         <button class="generation" id="generate" type="button" disabled>
